@@ -109,7 +109,7 @@
             msgSub();
           }
           currentRoomId = roomId;
-          msgSub = db.doc(`rooms/${roomId}`).collection('messages').onSnapshot(messages => {
+          msgSub = db.doc(`rooms/${roomId}`).collection('messages').orderBy('timestamp').onSnapshot(messages => {
             renderMessages(messages);
           });
         }

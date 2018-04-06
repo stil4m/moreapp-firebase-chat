@@ -7,10 +7,6 @@
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
       "npm --prefix \"$RESOURCE_DIR\" run build"
-    ],
-    "rewrites": [
-        { "source": "/api/sendMessage", "function": "sendMessage" },
-        { "source": "/api/createRoom", "function": "createRoom" }
     ]
   },
   "hosting": {
@@ -19,6 +15,10 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+        { "source": "/api/sendMessage", "function": "sendMessage" },
+        { "source": "/api/createRoom", "function": "createRoom" }
     ]
   },
   "storage": {
