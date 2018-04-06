@@ -1,0 +1,17 @@
+#app {
+  margin: 50px 100px;
+  display: flex;
+  min-height: 800px;
+}
+
+#sidebar {
+  background: blue;
+  width: 400px;
+  height: auto;
+}
+
+#message-content {
+  flex-grow: 1;
+  background: red;
+  height: auto;
+}
