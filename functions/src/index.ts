@@ -24,3 +24,22 @@ export const createRoom = functions.https.onRequest((request, response) => {
 
 
 });
+
+
+export const sendMessage = functions.https.onRequest((request, response) => {
+  const alias = request.query.alias;
+  const message = request.query.message;
+  const roomId = request.query.roomId;
+  return admin.firestore().collection('rooms').doc(roomId).collection('messages').add({
+    alias: alias,
+    message: message,
+    timestamp: new Date().getTime()
+  }).then(writeResult => {
+    console.log(writeResult);
+     response.json({
+       success: true,
+       message: 'Sent message!',
+       writeResult: writeResult
+     })
+  });
+});
