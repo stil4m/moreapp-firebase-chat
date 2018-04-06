@@ -1,11 +1,49 @@
-#app {
+
+#container {
   margin: 50px 100px;
+}
+#app {
   display: flex;
   min-height: 800px;
 }
 
+#message-content ul li p {
+  margin: 1px;
+
+}
+#message-content ul li .message-alias {
+  font-weight: bold;
+}
+#message-content ul li {
+  margin: 3px;
+  border: solid 1px #ccc;
+  border-radius: 2px;
+  padding: 5px;
+}
+
+
+#message-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#sidebar ul li {
+  padding : 15px 25px;
+  border-bottom: 1px solid #999;
+}
+#sidebar ul li:hover {
+  background: #eee;
+}
+#sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 #sidebar {
-  background: blue;
+  border: 1px solid black;
+  margin-right: 5px;
+  background: white;
   width: 400px;
   height: auto;
 }
@@ -14,4 +52,17 @@
   flex-grow: 1;
   background: red;
   height: auto;
+
+  border: 1px solid black;
+  background: white;
+}
+
+
+#chat-form {
+    display: flex;
+    flex-direction: row;
+}
+
+#chat-form input.message-input {
+    flex-grow: 1;
 }

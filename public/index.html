@@ -10,10 +10,14 @@
     <!-- include only the Firebase features as you need -->
     <script defer src="/__/firebase/4.12.1/firebase-auth.js"></script>
     <script defer src="/__/firebase/4.12.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/4.12.1/firebase-firestore.js"></script>
     <script defer src="/__/firebase/4.12.1/firebase-messaging.js"></script>
     <script defer src="/__/firebase/4.12.1/firebase-storage.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script scr="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.core.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 
     <link href="/main.css" type="text/css" rel="stylesheet"></link>
     <style media="screen">
@@ -32,16 +36,23 @@
     </style>
   </head>
   <body>
-    <div id="app">
-      <div id="sidebar">
-        SideBar
+    <div id="container">
+      <div id="app">
+        <div id="sidebar">
+          <ul></ul>
+        </div>
+        <div id="message-content">
+          <ul></ul>
+        </div>
       </div>
-      <div id="message-content">
-        Content
-      </div>
+      <form id="chat-form" class="form-inline" style="margin:10px 0;">
+        <input class="message-alias form-control mb-2 mr-sm-2" placeholder="Alias">
+        <input class="message-input form-control mb-2 mr-sm-2" placeholder="Message">
+        <button type="submit" class="btn btn-primary mb-2">Send</button>
+      </form>
+      <a href="" class="submit" target="_blank"></a>
     </div>
     <p id="load">Firebase SDK Loading&hellip;</p>
-
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
@@ -53,15 +64,71 @@
         // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
         //
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
+        let app;
         try {
-          let app = firebase.app();
+          app = firebase.app();
           let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
           document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
         } catch (e) {
           console.error(e);
           document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
         }
+        const db = app.firestore();
+        let msgSub;
+        let currentRoomId;
+
+
+
+        function renderMessages(messages) {
+          const ul = $("#message-content ul");
+          ul.empty();
+          messages.forEach(message => {
+            const data = message.data();
+            const li = $(`<li class="message"><p class="message-alias">${data.alias}</p><p class="message-value">${data.message}</p></li>`);
+            ul.append(li);
+          });
+        }
+
+        $("#chat-form").on('submit', function(event) {
+          event.preventDefault();
+          const alias = $(this).find('.message-alias')[0].value;
+          const message = $(this).find('.message-input')[0].value;
+          const url = `https://us-central1-avisi-chat.cloudfunctions.net/sendMessage?alias=${alias}&message=${message}&roomId=${currentRoomId}`;
+          $("a.submit").attr('href',url);
+          debugger;
+          $("a.submit").text(url);
+          $.getJSON(url, null, function(data) {
+            console.log("GET JSON!", data);
+          });
+        });
+
+
+        function selectRoom(roomId, roomData) {
+          console.log(`Select Room: ${roomId}`);
+          if (msgSub) {
+            msgSub();
+          }
+          currentRoomId = roomId;
+          msgSub = db.doc(`rooms/${roomId}`).collection('messages').onSnapshot(messages => {
+            renderMessages(messages);
+          });
+        }
+
+         db.collection('rooms').onSnapshot((snapshot) => {
+            const ul = $("#sidebar ul");
+            ul.empty();
+             snapshot.forEach((doc) => {
+                const id = doc.id;
+                const data = doc.data();
+                const li = $("<li>"+ data.name +"</li>");
+                ul.append(li);
+                li.on('click', function() { selectRoom(id, data); });
+             });
+         })
+
+
+
+
       });
     </script>
   </body>
