@@ -15,7 +15,7 @@ export const createRoom = functions.https.onRequest((request, response) => {
        message: "'roomName' query param not provided"
      })
    }
-   return admin.firestore().collection('rooms').add({name: 'roomName', messages : [{alias : 'avisi-chat', message: 'This is a new room!'}]}).then(writeResult => {
+   return admin.firestore().collection('rooms').add({name: roomName, messages : [{alias : 'avisi-chat', message: 'This is a new room!'}]}).then(writeResult => {
       response.json({
         success: true,
         message: 'Created room!'
