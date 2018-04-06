@@ -93,7 +93,7 @@
           event.preventDefault();
           const alias = $(this).find('.message-alias')[0].value;
           const message = $(this).find('.message-input')[0].value;
-          const url = `https://us-central1-avisi-chat.cloudfunctions.net/sendMessage?alias=${alias}&message=${message}&roomId=${currentRoomId}`;
+          const url = `/api/sendMessage?alias=${alias}&message=${message}&roomId=${currentRoomId}`;
           $("a.submit").attr('href',url);
           debugger;
           $("a.submit").text(url);
